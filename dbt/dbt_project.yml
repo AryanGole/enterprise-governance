@@ -1,0 +1,40 @@
+name: 'enterprise_governance'
+version: '2.1.0'
+config-version: 2
+
+profile: 'enterprise_governance'
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  enterprise_governance:
+    staging:
+      +materialized: view
+      +schema: staging
+      +tags: ["staging", "daily"]
+    intermediate:
+      +materialized: ephemeral
+      +tags: ["intermediate"]
+    marts:
+      +materialized: table
+      +schema: mart
+      +tags: ["mart", "gold", "daily"]
+    governance:
+      +materialized: table
+      +schema: governance_mart
+      +tags: ["governance", "daily"]
+
+vars:
+  governance_platform_version: "2.1.0"
+  pii_masking_enabled: true
+  governance_score_weights:
+    documentation: 0.30
+    ownership: 0.20
+    classification: 0.20
+    lineage: 0.20
+    recency: 0.10
